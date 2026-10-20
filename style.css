@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JAWI RUSH — COMPACT MOBILE-FIRST STYLESHEET WITH AUTO-LANDSCAPE ROTATION
+   JAWI RUSH — COMPACT MOBILE-FIRST STYLESHEET WITH AUTO-LANDSCAPE & GALERI KOTA
    ========================================================================== */
 
 :root {
@@ -384,7 +384,7 @@ body {
 
 .letter-btn.used { opacity: 0.2; pointer-events: none; background: #e2e8f0; box-shadow: none; }
 
-/* MODAL & ACHIEVEMENTS */
+/* ================= MODAL & GALERI KATA KOTAK (GRID CARDS) ================= */
 .ps5-toast {
     position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
     background: rgba(15, 23, 42, 0.95); border: 2px solid #fde047;
@@ -410,10 +410,83 @@ body {
     width: 28px; height: 28px; border-radius: 50%; font-size: 1.1rem; font-weight: bold;
 }
 
+/* CARTA BAR KEMAJUAN GALERI */
+.gallery-stats-bar {
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+    border: 1px solid #7dd3fc;
+}
+
+/* SUSUNAN KOTAK GALERI (GRID CARDS) */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px;
+    margin-bottom: 10px;
+}
+
+.gallery-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    transition: transform 0.15s;
+}
+
+.gallery-card.unlocked {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.15);
+}
+
+.gallery-card.locked {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    opacity: 0.6;
+}
+
+.gallery-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.gallery-rumi {
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: #1e293b;
+}
+
+.gallery-jawi {
+    font-family: var(--font-jawi);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    direction: rtl;
+}
+
+/* PENCAPAIAN (ACHIEVEMENTS) */
 .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; }
 .achievement-card { background: white; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 8px; display: flex; align-items: center; gap: 10px; }
 .ach-icon { font-size: 1.8rem; width: 40px; height: 40px; background: #f1f5f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
 
+/* SKRIN KEPUTUSAN */
 .result-card { background: var(--card-3d-bg); border-radius: 16px; padding: 14px; max-width: 440px; margin: auto; }
 .result-header h2 { color: var(--accent-green); font-size: 1.2rem; text-align: center; }
 .score-big-box { text-align: center; background: #f1f5f9; padding: 6px; border-radius: 8px; margin: 6px 0; }
