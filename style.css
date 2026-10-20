@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JAWI RUSH — COMPACT MOBILE-FIRST STYLESHEET WITH AUTO-LANDSCAPE & GALERI KOTA
+   JAWI RUSH — STYLESHEET WITH LANDSCAPE NOTICE & GALERI KATA GRID CARDS
    ========================================================================== */
 
 :root {
@@ -39,6 +39,43 @@ body {
     padding: 0;
 }
 
+/* ================= NOTIS PERINGATAN MOD LANDSKAP ================= */
+.landscape-notice {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #0f172a;
+    color: white;
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.notice-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.rotate-icon {
+    font-size: 3.8rem;
+    animation: rotatePhone 2s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+}
+
+@media screen and (orientation: portrait) {
+    .landscape-notice {
+        display: flex !important;
+    }
+}
+
 /* CONTAINER UTAMA PERMAINAN */
 .game-container {
     width: 100vw;
@@ -48,22 +85,6 @@ body {
     flex-direction: column;
     position: relative;
     overflow: hidden;
-}
-
-/* AUTO-LANDSCAPE: PAKSA PAPARAN MENJADI LANDSCAPE WALAUPUN TELEFON DIDEGAKKAN */
-@media screen and (orientation: portrait) {
-    body {
-        overflow: hidden;
-    }
-    .game-container {
-        width: 100dvh !important;
-        height: 100vw !important;
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) rotate(90deg) !important;
-        transform-origin: center center !important;
-    }
 }
 
 .top-bar {
@@ -384,7 +405,7 @@ body {
 
 .letter-btn.used { opacity: 0.2; pointer-events: none; background: #e2e8f0; box-shadow: none; }
 
-/* ================= MODAL & GALERI KATA KOTAK (GRID CARDS) ================= */
+/* ================= MODAL & GALERI KATA KOTAK-KOTAK (GRID CARDS) ================= */
 .ps5-toast {
     position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
     background: rgba(15, 23, 42, 0.95); border: 2px solid #fde047;
@@ -410,7 +431,6 @@ body {
     width: 28px; height: 28px; border-radius: 50%; font-size: 1.1rem; font-weight: bold;
 }
 
-/* CARTA BAR KEMAJUAN GALERI */
 .gallery-stats-bar {
     background: #e0f2fe;
     color: #0369a1;
@@ -423,19 +443,19 @@ body {
     border: 1px solid #7dd3fc;
 }
 
-/* SUSUNAN KOTAK GALERI (GRID CARDS) */
+/* SUSUNAN KOTAK GALERI KATA (KOTAK-KOTAK) */
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-    gap: 8px;
-    max-height: 220px;
+    gap: 10px;
+    max-height: 230px;
     overflow-y: auto;
-    padding: 4px;
+    padding: 6px;
     margin-bottom: 10px;
 }
 
 .gallery-card {
-    background: white;
+    background: #ffffff;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
     padding: 8px 4px;
@@ -444,15 +464,15 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.05);
-    transition: transform 0.15s;
+    gap: 3px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+    min-height: 88px;
 }
 
 .gallery-card.unlocked {
     border-color: #10b981;
     background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.15);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
 }
 
 .gallery-card.locked {
@@ -462,9 +482,8 @@ body {
 }
 
 .gallery-icon {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     line-height: 1;
-    margin-bottom: 2px;
 }
 
 .gallery-rumi {
@@ -475,7 +494,7 @@ body {
 
 .gallery-jawi {
     font-family: var(--font-jawi);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--primary-dark);
     direction: rtl;
