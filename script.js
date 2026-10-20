@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JAWI RUSH — FRONTEND LOGIC WITH COUNTDOWN & CLOUD SYNC
+   JAWI RUSH — FRONTEND LOGIC WITH AUTO-LOCK LANDSCAPE
    ========================================================================== */
 
 const CONFIG = {
@@ -235,7 +235,7 @@ class SoundEngine {
         gain.gain.linearRampToValueAtTime(0, now + 0.25);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start();
+        osc.start(now);
         osc.stop(now + 0.25);
     }
 
@@ -296,6 +296,14 @@ class SoundEngine {
 
 const sounds = new SoundEngine();
 
+function lockOrientationToLandscape() {
+    try {
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock("landscape").catch(() => {});
+        }
+    } catch(e) {}
+}
+
 function generateSVGForWord(wordObj) {
     const categoryColors = {
         "Benda": "#3b82f6", "Haiwan": "#10b981", "Makanan": "#f59e0b",
@@ -327,6 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startAudioOnFirstInteraction = () => {
         sounds.startBGM("MENU");
+        lockOrientationToLandscape();
         document.removeEventListener("pointerdown", startAudioOnFirstInteraction);
         document.removeEventListener("keydown", startAudioOnFirstInteraction);
     };
@@ -398,6 +407,7 @@ function setupUIEvents() {
 }
 
 function startGame(selectedMode) {
+    lockOrientationToLandscape();
     const nameInput = document.getElementById("input-student-name").value.trim();
     const yearInput = document.getElementById("select-student-year").value;
     const classInput = document.getElementById("select-student-class").value;
@@ -457,7 +467,6 @@ function startGame(selectedMode) {
         sounds.startBGM(state.mode);
         loadQuestion();
 
-        // JALANKAN COUNTDOWN "3... 2... 1... MULA!" UNTUK MENGELAKKAN LAG
         startCountdown(() => {
             if (state.mode === "CHALLENGE") {
                 state.startTimeStamp = Date.now();
