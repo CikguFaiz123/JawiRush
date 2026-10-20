@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ms" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JAWI RUSH 3D — Fullscreen HD Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Naskh+Arabic:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NOTIFIKASI POP-OUT BERGAYA PS5 TROPHY -->
+    <div id="ps5-achievement-toast" class="ps5-toast hidden">
+        <div class="ps5-toast-icon-wrap">
+            <span id="ps5-toast-icon">🏆</span>
+        </div>
+        <div class="ps5-toast-text">
+            <span class="ps5-toast-tag">🏆 PENCAPAIAN DIBUKA!</span>
+            <strong id="ps5-toast-title">Pingat Kayu</strong>
+            <span id="ps5-toast-desc">Membuka 10 perkataan Jawi!</span>
+        </div>
+    </div>
+
+    <!-- Peringatan Pusing Skrin (Hanya Muncul Jika Peranti Dalam Potret) -->
+    <div id="landscape-notice" class="landscape-notice">
+        <div class="notice-content">
+            <span class="rotate-icon">📱↻</span>
+            <h2>Sila Pusingkan Peranti Anda</h2>
+            <p>Permainan ini direka khas untuk dimainkan dalam <strong>Mod Melintang (Landscape)</strong>.</p>
+        </div>
+    </div>
+
+    <div id="game-container" class="game-container">
+
+        <!-- Header Top Bar -->
+        <header class="top-bar">
+            <div class="logo-mini">✨ JAWI RUSH 3D</div>
+            <div id="player-badge" class="player-badge hidden">
+                <span id="display-player-name">Murid</span> (<span id="display-player-year">Tahun</span> - <span id="display-player-class">Kelas</span>)
+            </div>
+            <div class="header-controls">
+                <button id="btn-sound-toggle" class="icon-btn" title="Muzik & Bunyi">🔊</button>
+                <button id="btn-fullscreen" class="icon-btn" title="Skrin Penuh">⛶</button>
+            </div>
+        </header>
+
+        <!-- SKRIN 1: MENU UTAMA BERPUSAT FULLSCREEN -->
+        <section id="screen-main-menu" class="screen active screen-menu-centered">
+            <!-- TAJUK & MASKOT DI TENGAH ATAS -->
+            <div class="menu-header-centered">
+                <div class="mascot-wrapper">
+                    <div class="mascot-avatar">🎓</div>
+                    <div class="mascot-shadow"></div>
+                </div>
+                <h1 class="game-title">JAWI RUSH</h1>
+                <p class="game-slogan">Lihat Gambar, Susun Huruf, Kuasai Jawi!</p>
+            </div>
+
+            <!-- BORANG & BUTANG DI TENGAH SKRIN -->
+            <div class="menu-body-centered">
+                <div class="form-card-3d">
+                    <div class="input-row-centered">
+                        <div class="input-group">
+                            <label for="input-student-name">👤 Nama Murid:</label>
+                            <input type="text" id="input-student-name" placeholder="Masukkan nama murid..." maxlength="25" autocomplete="off">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="select-student-year">📅 Tahun / Umur:</label>
+                            <select id="select-student-year">
+                                <option value="">-- Pilih Tahun --</option>
+                                <option value="6 Tahun">6 Tahun (KDK)</option>
+                                <option value="Tahun 1">Tahun 1</option>
+                                <option value="Tahun 2">Tahun 2</option>
+                                <option value="Tahun 3">Tahun 3</option>
+                                <option value="Tahun 4">Tahun 4</option>
+                                <option value="Tahun 5">Tahun 5</option>
+                                <option value="Tahun 6">Tahun 6</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="select-student-class">🏫 Kelas:</label>
+                            <select id="select-student-class">
+                                <option value="">-- Pilih Kelas --</option>
+                                <option value="Alpha">Alpha</option>
+                                <option value="Beta">Beta</option>
+                                <option value="Gamma">Gamma</option>
+                                <option value="Neutron">Neutron</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mode-buttons-centered">
+                    <button id="btn-mode-relax" class="btn btn-mode btn-relax">
+                        <span class="mode-icon">🌱</span>
+                        <div class="mode-info">
+                            <strong>MOD RELAKS</strong>
+                            <span>10 Soalan • Latihan Santai</span>
+                        </div>
+                    </button>
+                    <button id="btn-mode-challenge" class="btn btn-mode btn-challenge">
+                        <span class="mode-icon">⚡</span>
+                        <div class="mode-info">
+                            <strong>MOD CHALLENGE</strong>
+                            <span>60 Saat • Papan Pendahulu</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="menu-footer-actions">
+                    <button id="btn-open-achievements" class="btn btn-3d btn-gold">🏅 Pencapaian</button>
+                    <button id="btn-open-gallery" class="btn btn-3d btn-secondary">📕 Galeri Kata</button>
+                    <button id="btn-open-guide" class="btn btn-3d btn-secondary">📖 Panduan</button>
+                    <button id="btn-open-leaderboard" class="btn btn-3d btn-secondary">🏆 Carta Skor</button>
+                    <button id="btn-open-settings" class="btn btn-3d btn-secondary">⚙️ Tetapan</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SKRIN 2: ARENA PERMAINAN BERPUSAT FULLSCREEN -->
+        <section id="screen-game-arena" class="screen screen-arena-centered">
+            <div class="game-hud">
+                <div class="hud-box">
+                    <span class="hud-label">MOD</span>
+                    <span id="hud-mode-name" class="hud-value">-</span>
+                </div>
+                <div class="hud-box" id="hud-tracker-container">
+                    <span id="hud-tracker-label" class="hud-label">SOALAN</span>
+                    <span id="hud-tracker-value" class="hud-value">1/10</span>
+                </div>
+                <div class="hud-box">
+                    <span class="hud-label">MARKAH</span>
+                    <span id="hud-score" class="hud-value">0</span>
+                </div>
+                <button id="btn-pause" class="btn btn-pause">⏸️ Jeda</button>
+            </div>
+
+            <div id="combo-banner" class="combo-banner hidden">🔥 KOMBO 3 BERTURUT-TURUT!</div>
+
+            <div class="arena-centered-wrapper">
+                <!-- GAMBAR & HINT DI TENGAH ATAS ARENA -->
+                <div class="question-card-centered">
+                    <div class="question-image-box" id="question-image-box"></div>
+                    <div class="rumi-hint-box">
+                        <span class="rumi-label">EJAAN:</span>
+                        <span id="rumi-word-display" class="rumi-word">BUKU</span>
+                    </div>
+                </div>
+
+                <!-- RUANG JAWAPAN & KEKUNCI DI TENGAH BAWAH ARENA -->
+                <div class="answer-keyboard-centered">
+                    <div class="answer-section">
+                        <div class="answer-label-row">
+                            <span>Susun Jawapan Jawi:</span>
+                            <span class="rtl-indicator">(Dari Kanan ➡️ Kiri)</span>
+                        </div>
+                        <div id="answer-slots-container" class="answer-slots" dir="rtl"></div>
+                    </div>
+
+                    <div class="action-controls">
+                        <button id="btn-action-delete" class="btn btn-action btn-delete">⌫ Padam</button>
+                        <button id="btn-action-clear" class="btn btn-action btn-clear">🗑️ Kosongkan</button>
+                        <button id="btn-action-hint" class="btn btn-action btn-hint">💡 Petunjuk (-10)</button>
+                    </div>
+
+                    <div class="keyboard-section">
+                        <div id="letters-grid" class="letters-grid" dir="rtl"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SKRIN 3: KEPUTUSAN MOD RELAKS -->
+        <section id="screen-result-relax" class="screen">
+            <div class="result-card">
+                <div class="result-header">
+                    <h2>🎉 SYABAS & TAHNIAH!</h2>
+                    <p>Sesi Mod Relaks Selesai (Latihan Sahaja)</p>
+                </div>
+
+                <div class="result-details">
+                    <p><strong>Nama:</strong> <span id="res-relax-name">-</span></p>
+                    <p><strong>Tahun & Kelas:</strong> <span id="res-relax-class">-</span></p>
+
+                    <div class="score-big-box">
+                        <span class="score-num" id="res-relax-score">0</span>
+                        <span class="score-denom">JUMLAH MARKAH</span>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Jawapan Betul</span>
+                            <span id="res-relax-correct" class="stat-val">0 / 10</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Ketepatan Percubaan Pertama</span>
+                            <span id="res-relax-accuracy" class="stat-val">0%</span>
+                        </div>
+                    </div>
+
+                    <h3>Senarai Perkataan Yang Dipelajari:</h3>
+                    <div id="res-relax-words-list" class="words-summary-list"></div>
+                </div>
+
+                <div class="result-actions">
+                    <button id="btn-relax-replay" class="btn btn-primary">🔄 Main Semula</button>
+                    <button id="btn-relax-menu" class="btn btn-secondary">🏠 Menu Utama</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SKRIN 4: KEPUTUSAN MOD CHALLENGE -->
+        <section id="screen-result-challenge" class="screen">
+            <div class="result-card">
+                <div class="result-header challenge-header">
+                    <h2>⚡ MASA TAMAT!</h2>
+                    <p>Pencapaian Cabaran 60 Saat</p>
+                </div>
+
+                <div class="result-details">
+                    <p><strong>Nama:</strong> <span id="res-chal-name">-</span></p>
+                    <p><strong>Tahun & Kelas:</strong> <span id="res-chal-class">-</span></p>
+
+                    <div class="score-big-box challenge-score">
+                        <span class="score-num" id="res-chal-score">0</span>
+                        <span class="score-denom">JUMLAH MARKAH</span>
+                    </div>
+
+                    <div class="stats-grid grid-3">
+                        <div class="stat-item">
+                            <span class="stat-label">Perkataan Unik</span>
+                            <span id="res-chal-correct" class="stat-val">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Percubaan Salah</span>
+                            <span id="res-chal-wrong" class="stat-val">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Bonus Masa Ditambah</span>
+                            <span id="res-chal-bonus" class="stat-val">+0s</span>
+                        </div>
+                    </div>
+
+                    <div class="personal-best-box">
+                        <span>🏆 Rekod Peribadi Terbaik: </span>
+                        <strong id="res-chal-pb">0 Markah</strong>
+                    </div>
+                </div>
+
+                <div id="save-status-msg" class="save-status-msg"></div>
+
+                <div class="result-actions">
+                    <button id="btn-chal-retry" class="btn btn-primary">⚡ Cuba Lagi</button>
+                    <button id="btn-chal-menu" class="btn btn-secondary">🏠 Menu Utama</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- MODAL RUANG PENCAPAIAN (ACHIEVEMENT ROOM) -->
+        <div id="modal-achievements" class="modal-overlay hidden">
+            <div class="modal-content modal-wide">
+                <button class="modal-close-x close-modal" data-modal="modal-achievements">&times;</button>
+                <h2>🏅 Ruang Pencapaian & Pingat</h2>
+                <p class="modal-subtitle">Kumpul perkataan unik untuk membuka semua 10 pingat kebanggaan!</p>
+
+                <div id="achievement-stats-bar" class="gallery-stats-bar">
+                    Pingat Dibuka: <strong id="achievements-unlocked-count">0</strong> / 10 Pingat
+                </div>
+
+                <div id="achievements-grid" class="achievements-grid"></div>
+
+                <button class="btn btn-secondary close-modal" data-modal="modal-achievements">⬅️ Kembali ke Menu</button>
+            </div>
+        </div>
+
+
+        <!-- MODAL PERKATAAN DIPELAJARI -->
+        <div id="modal-gallery" class="modal-overlay hidden">
+            <div class="modal-content modal-wide">
+                <button class="modal-close-x close-modal" data-modal="modal-gallery">&times;</button>
+                <h2>📕 Perkataan Yang Telah Dipelajari</h2>
+                <div id="gallery-stats-bar" class="gallery-stats-bar">
+                    Kemajuan: <strong id="gallery-unlocked-count">0</strong> / 100 Perkataan Terbuka
+                </div>
+                <div id="gallery-grid" class="gallery-grid"></div>
+                <button class="btn btn-secondary close-modal" data-modal="modal-gallery">⬅️ Kembali ke Menu</button>
+            </div>
+        </div>
+
+
+        <!-- MODAL PAPAN PENDAHULU -->
+        <div id="modal-leaderboard" class="modal-overlay hidden">
+            <div class="modal-content modal-wide">
+                <button class="modal-close-x close-modal" data-modal="modal-leaderboard">&times;</button>
+                <h2>🏆 Papan Pendahulu (Mod Challenge)</h2>
+                
+                <div class="leaderboard-filters">
+                    <select id="leaderboard-class-filter">
+                        <option value="ALL">Semua Kelas</option>
+                        <option value="Alpha">Alpha</option>
+                        <option value="Beta">Beta</option>
+                        <option value="Gamma">Gamma</option>
+                        <option value="Neutron">Neutron</option>
+                        <option value="Lain-lain">Lain-lain</option>
+                    </select>
+                </div>
+
+                <div class="leaderboard-table-wrapper">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama Murid</th>
+                                <th>Tahun & Kelas</th>
+                                <th>Markah</th>
+                                <th>Betul</th>
+                                <th>Tarikh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody">
+                            <tr><td colspan="6" class="text-center">Memuatkan data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn btn-secondary close-modal" data-modal="modal-leaderboard">⬅️ Kembali ke Menu</button>
+            </div>
+        </div>
+
+
+        <!-- MODAL PANDUAN -->
+        <div id="modal-guide" class="modal-overlay hidden">
+            <div class="modal-content">
+                <button class="modal-close-x close-modal" data-modal="modal-guide">&times;</button>
+                <h2>📖 Panduan Permainan</h2>
+                <div class="modal-body">
+                    <ol>
+                        <li>Lihat gambar dan sebutan Rumi.</li>
+                        <li>Tekan huruf-huruf Jawi untuk menyusun ejaan dari <strong>kanan ke kiri</strong>.</li>
+                        <li>Petunjuk akan membantu 1 huruf tetapi <strong>menolak 10 markah</strong>.</li>
+                        <li>Buka sehingga 100 perkataan untuk mengumpul <strong>10 Pingat Pencapaian</strong>!</li>
+                    </ol>
+                </div>
+                <button class="btn btn-secondary close-modal" data-modal="modal-guide">Tutup</button>
+            </div>
+        </div>
+
+
+        <!-- MODAL TETAPAN -->
+        <div id="modal-settings" class="modal-overlay hidden">
+            <div class="modal-content">
+                <button class="modal-close-x close-modal" data-modal="modal-settings">&times;</button>
+                <h2>⚙️ Tetapan Permainan</h2>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label for="setting-sound-volume">Volume Bunyi & Muzik:</label>
+                        <input type="range" id="setting-sound-volume" min="0" max="1" step="0.1" value="0.8">
+                    </div>
+                    <div class="setting-item">
+                        <label for="setting-online-sync">
+                            <input type="checkbox" id="setting-online-sync" checked> Simpan skor ke Papan Pendahulu
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-secondary close-modal" data-modal="modal-settings">Simpan & Tutup</button>
+            </div>
+        </div>
+
+
+        <!-- MODAL JEDA -->
+        <div id="modal-pause" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2>⏸️ PERMAINAN DIJEDA</h2>
+                <div class="modal-actions-vertical">
+                    <button id="btn-resume-game" class="btn btn-primary">▶️ Teruskan Permainan</button>
+                    <button id="btn-quit-game" class="btn btn-danger">🏠 Keluar ke Menu</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
