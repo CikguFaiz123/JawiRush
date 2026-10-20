@@ -1,9 +1,8 @@
 /* ==========================================================================
-   JAWI RUSH — FRONTEND LOGIC WITH AUTOMATIC CLOUD SYNC & LEADERBOARD
+   JAWI RUSH — FRONTEND LOGIC WITH COUNTDOWN & CLOUD SYNC
    ========================================================================== */
 
 const CONFIG = {
-    // URL WEB APP BERSAMBUNG KE GOOGLE SHEETS ANDA:
     GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbyBFQ_pzJU56JLsKyqtdgABH2mb8Wq41llr4EwvVPsh4SDk8zjwx36vOtJU-hqjTVq8Rw/exec",
     AUDIO_ENABLED: true,
     MAX_CHALLENGE_TIME: 120
@@ -95,10 +94,7 @@ const WORD_BANK = [
     { id: "w56", rumi: "BACA", jawi: "باچا", letters: ["ب", "ا", "چ", "ا"], category: "Aktiviti", difficulty: 1 },
     { id: "w57", rumi: "TULIS", jawi: "توليس", letters: ["ت", "و", "ل", "ي", "س"], category: "Aktiviti", difficulty: 1 },
     { id: "w58", rumi: "LARI", jawi: "لاري", letters: ["ل", "ا", "ر", "ي"], category: "Aktiviti", difficulty: 1 },
-
-    // EJAAN MANDI DIKEMASKINI: منداي (م + ن + د + ا + ي)
     { id: "w59", rumi: "MANDI", jawi: "منداي", letters: ["م", "ن", "د", "ا", "ي"], category: "Aktiviti", difficulty: 1 },
-
     { id: "w60", rumi: "TIDUR", jawi: "تيدور", letters: ["ت", "ي", "د", "و", "ر"], category: "Aktiviti", difficulty: 1 },
     { id: "w61", rumi: "KERETA", jawi: "كريتا", letters: ["ك", "ر", "ي", "ت", "ا"], category: "Kenderaan", difficulty: 1 },
     { id: "w62", rumi: "BAS", jawi: "بس", letters: ["ب", "س"], category: "Kenderaan", difficulty: 1 },
@@ -169,6 +165,7 @@ const state = {
     totalBonusTimeEarned: 0,
     isPaused: false,
     gameActive: false,
+    inputBlocked: false,
     hasPlayedWarning: false,
     sessionId: ""
 };
@@ -179,7 +176,6 @@ class SoundEngine {
         this.volume = 0.8;
         this.bgmVolume = 0.22;
         this.bgmTimer = null;
-        this.currentBgmMode = null;
         this.bgmStep = 0;
     }
 
@@ -214,31 +210,16 @@ class SoundEngine {
         this.init();
         const now = this.ctx.currentTime;
         const osc1 = this.ctx.createOscillator();
-        const osc2 = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-
         osc1.type = "sine";
-        osc2.type = "triangle";
-
         osc1.frequency.setValueAtTime(1046.50, now);
-        osc1.frequency.setValueAtTime(1567.98, now + 0.12);
         osc1.frequency.setValueAtTime(2093.00, now + 0.25);
-
-        osc2.frequency.setValueAtTime(523.25, now);
-        osc2.frequency.setValueAtTime(783.99, now + 0.12);
-        osc2.frequency.setValueAtTime(1046.50, now + 0.25);
-
-        gain.gain.setValueAtTime(this.volume * 0.6, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-
+        gain.gain.setValueAtTime(this.volume * 0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
         osc1.connect(gain);
-        osc2.connect(gain);
         gain.connect(this.ctx.destination);
-
         osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + 0.8);
-        osc2.stop(now + 0.8);
+        osc1.stop(now + 0.6);
     }
 
     playCorrect() {
@@ -249,14 +230,13 @@ class SoundEngine {
         const gain = this.ctx.createGain();
         osc.type = "triangle";
         osc.frequency.setValueAtTime(523.25, now);
-        osc.frequency.setValueAtTime(659.25, now + 0.08);
-        osc.frequency.setValueAtTime(783.99, now + 0.16);
+        osc.frequency.setValueAtTime(783.99, now + 0.12);
         gain.gain.setValueAtTime(this.volume * 0.5, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.3);
+        gain.gain.linearRampToValueAtTime(0, now + 0.25);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(now + 0.3);
+        osc.stop(now + 0.25);
     }
 
     playWrong() {
@@ -276,54 +256,18 @@ class SoundEngine {
         osc.stop(now + 0.2);
     }
 
-    playCombo() {
-        if (!CONFIG.AUDIO_ENABLED) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(440, now);
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.25);
-        gain.gain.setValueAtTime(this.volume * 0.5, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.25);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(now + 0.25);
-    }
-
-    playWarning() {
-        if (!CONFIG.AUDIO_ENABLED) return;
-        this.init();
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = "square";
-        osc.frequency.setValueAtTime(800, now);
-        gain.gain.setValueAtTime(this.volume * 0.25, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.2);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(now + 0.2);
-    }
-
     startBGM(mode) {
         this.stopBGM();
         this.init();
         if (!CONFIG.AUDIO_ENABLED) return;
-
-        this.currentBgmMode = mode;
         this.bgmStep = 0;
-
-        if (mode === "MENU") {
-            this.loopMenuBGM();
-        } else if (mode === "RELAX") {
-            this.loopRelaxBGM();
-        } else if (mode === "CHALLENGE") {
-            this.loopChallengeBGM();
-        }
+        const notes = mode === "CHALLENGE" ? [329.63, 392.00, 493.88, 587.33] : [261.63, 329.63, 392.00, 523.25];
+        this.bgmTimer = setInterval(() => {
+            if (!CONFIG.AUDIO_ENABLED || !this.ctx) return;
+            const freq = notes[this.bgmStep % notes.length];
+            this.playTone(freq, "sine", 0.2, this.bgmVolume * 0.3);
+            this.bgmStep++;
+        }, mode === "CHALLENGE" ? 200 : 400);
     }
 
     stopBGM() {
@@ -331,40 +275,6 @@ class SoundEngine {
             clearInterval(this.bgmTimer);
             this.bgmTimer = null;
         }
-        this.currentBgmMode = null;
-    }
-
-    loopMenuBGM() {
-        const melody = [523.25, 659.25, 783.99, 659.25, 523.25, 587.33, 659.25, 392.00];
-        this.bgmTimer = setInterval(() => {
-            if (!CONFIG.AUDIO_ENABLED || !this.ctx) return;
-            const freq = melody[this.bgmStep % melody.length];
-            this.playTone(freq, "sine", 0.3, this.bgmVolume * 0.35);
-            this.bgmStep++;
-        }, 350);
-    }
-
-    loopRelaxBGM() {
-        const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 392.00, 329.63, 293.66];
-        this.bgmTimer = setInterval(() => {
-            if (!CONFIG.AUDIO_ENABLED || !this.ctx) return;
-            const freq = notes[this.bgmStep % notes.length];
-            this.playTone(freq, "sine", 0.35, this.bgmVolume * 0.3);
-            this.bgmStep++;
-        }, 400);
-    }
-
-    loopChallengeBGM() {
-        const melody = [
-            329.63, 392.00, 493.88, 392.00, 329.63, 392.00, 493.88, 587.33,
-            440.00, 523.25, 659.25, 523.25, 440.00, 523.25, 659.25, 493.88
-        ];
-        this.bgmTimer = setInterval(() => {
-            if (!CONFIG.AUDIO_ENABLED || !this.ctx) return;
-            const freq = melody[this.bgmStep % melody.length];
-            this.playTone(freq, "square", 0.08, this.bgmVolume * 0.25);
-            this.bgmStep++;
-        }, 130);
     }
 
     playTone(freq, type, duration, vol) {
@@ -391,8 +301,7 @@ function generateSVGForWord(wordObj) {
         "Benda": "#3b82f6", "Haiwan": "#10b981", "Makanan": "#f59e0b",
         "Anggota Badan": "#ec4899", "Keluarga": "#8b5cf6", "Alam": "#14b8a6",
         "Tempat": "#6366f1", "Aktiviti": "#f97316", "Kenderaan": "#0284c7",
-        "Pakaian": "#d946ef", "Rumah": "#84cc16", "Sukan": "#ea580c",
-        "Warna": "#a855f7", "Pekerjaan": "#059669"
+        "Pakaian": "#d946ef", "Rumah": "#84cc16", "Sukan": "#ea580c"
     };
 
     const color = categoryColors[wordObj.category] || "#3b82f6";
@@ -527,7 +436,6 @@ function startGame(selectedMode) {
     document.getElementById("display-player-class").innerText = state.playerClass;
     document.getElementById("player-badge").classList.remove("hidden");
 
-    // METODE UNTUK MEMUAT TURUN KEMAJUAN MURID DARI AWAN GOOGLE SHEETS
     loadCloudProgress(state.studentKey, () => {
         state.questionPool = shuffleArray([...WORD_BANK]);
         state.currentIndex = 0;
@@ -539,18 +447,58 @@ function startGame(selectedMode) {
         } else {
             document.getElementById("hud-mode-name").innerText = "CHALLENGE";
             document.getElementById("hud-tracker-label").innerText = "MASA BAKI";
+            document.getElementById("hud-tracker-value").innerText = `60s`;
             state.timeRemaining = 60;
             state.totalBonusTimeEarned = 0;
-            state.startTimeStamp = Date.now();
             state.pausedTimeAccumulated = 0;
-            state.gameActive = true;
-            startChallengeTimer();
         }
 
         switchScreen("screen-game-arena");
         sounds.startBGM(state.mode);
         loadQuestion();
+
+        // JALANKAN COUNTDOWN "3... 2... 1... MULA!" UNTUK MENGELAKKAN LAG
+        startCountdown(() => {
+            if (state.mode === "CHALLENGE") {
+                state.startTimeStamp = Date.now();
+                state.gameActive = true;
+                startChallengeTimer();
+            } else {
+                state.gameActive = true;
+            }
+        });
     });
+}
+
+function startCountdown(callback) {
+    const overlay = document.getElementById("countdown-overlay");
+    const numElem = document.getElementById("countdown-number");
+    if (!overlay || !numElem) {
+        if (callback) callback();
+        return;
+    }
+
+    state.inputBlocked = true;
+    overlay.classList.remove("hidden");
+    let count = 3;
+    numElem.innerText = count;
+    sounds.playClick();
+
+    const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            numElem.innerText = count;
+            sounds.playClick();
+        } else if (count === 0) {
+            numElem.innerText = "MULA!";
+            sounds.playCorrect();
+        } else {
+            clearInterval(interval);
+            overlay.classList.add("hidden");
+            state.inputBlocked = false;
+            if (callback) callback();
+        }
+    }, 600);
 }
 
 function loadCloudProgress(studentKey, callback) {
@@ -645,9 +593,6 @@ function renderAnswerSlots() {
         if (state.userSelectedLetters[i]) {
             slot.innerText = state.userSelectedLetters[i].letter;
             slot.classList.add("filled");
-            if (state.userSelectedLetters[i].isHint) {
-                slot.classList.add("hint-filled");
-            }
         }
         container.appendChild(slot);
     }
@@ -689,7 +634,7 @@ function setupKeyboardLetters() {
 }
 
 function handleSelectLetter(letterObj, btnElement) {
-    if (state.userSelectedLetters.length >= state.currentWord.letters.length) return;
+    if (state.inputBlocked || state.userSelectedLetters.length >= state.currentWord.letters.length) return;
 
     sounds.playClick();
     state.userSelectedLetters.push(letterObj);
@@ -703,7 +648,7 @@ function handleSelectLetter(letterObj, btnElement) {
 }
 
 function handleDeleteLetter() {
-    if (state.userSelectedLetters.length === 0) return;
+    if (state.inputBlocked || state.userSelectedLetters.length === 0) return;
     sounds.playClick();
 
     const popped = state.userSelectedLetters.pop();
@@ -714,7 +659,7 @@ function handleDeleteLetter() {
 }
 
 function handleClearLetters() {
-    if (state.userSelectedLetters.length === 0) return;
+    if (state.inputBlocked || state.userSelectedLetters.length === 0) return;
     sounds.playClick();
 
     state.userSelectedLetters.forEach(item => {
@@ -727,9 +672,10 @@ function handleClearLetters() {
 }
 
 function handleGiveHint() {
+    if (state.inputBlocked) return;
     if (state.score < 10) {
         sounds.playWrong();
-        showComboBanner("⚠️ Markah tidak cukup! Petunjuk memerlukan 10 markah.");
+        showComboBanner("⚠️ Markah tidak cukup!");
         return;
     }
 
@@ -744,9 +690,7 @@ function handleGiveHint() {
     if (availableBtn) {
         state.score -= 10;
         document.getElementById("hud-score").innerText = state.score;
-
         sounds.playClick();
-        showComboBanner("💡 Petunjuk digunakan! (-10 Markah)");
 
         const letterObj = {
             id: availableBtn.dataset.id,
@@ -766,7 +710,7 @@ function checkAnswer() {
         sounds.playCorrect();
         
         slots.forEach(slot => {
-            slot.classList.remove("filled", "hint-filled", "wrong");
+            slot.classList.remove("filled");
             slot.classList.add("correct");
         });
 
@@ -786,18 +730,17 @@ function checkAnswer() {
         }
 
         if (state.comboStreak >= 3) {
-            sounds.playCombo();
-            showComboBanner(`🔥 KRITIKAL! ${state.comboStreak} JAWAPAN BETUL BERTURUT-TURUT!`);
+            showComboBanner(`🔥 KOMBO ${state.comboStreak} JAWAPAN BETUL!`);
         }
 
         state.currentIndex++;
-        setTimeout(loadQuestion, 700);
+        setTimeout(loadQuestion, 600);
 
     } else {
         sounds.playWrong();
         
         slots.forEach(slot => {
-            slot.classList.remove("filled", "hint-filled", "correct");
+            slot.classList.remove("filled");
             slot.classList.add("wrong");
         });
 
@@ -805,11 +748,11 @@ function checkAnswer() {
         state.comboStreak = 0;
         state.hasFailedCurrentWord = true;
 
-        showComboBanner("❌ Cuba Lagi! Semak urutan huruf anda.");
+        showComboBanner("❌ Cuba Lagi!");
 
         setTimeout(() => {
             handleClearLetters();
-        }, 800);
+        }, 700);
     }
 }
 
@@ -819,7 +762,7 @@ function showComboBanner(text) {
     banner.classList.remove("hidden");
     setTimeout(() => {
         banner.classList.add("hidden");
-    }, 1500);
+    }, 1200);
 }
 
 function unlockWordInStorage(wordId) {
@@ -840,7 +783,6 @@ function checkAndAwardAchievements(unlockedCount) {
         if (unlockedCount >= ach.reqWords && !awardedList.includes(ach.id)) {
             awardedList.push(ach.id);
             localStorage.setItem("JAWI_RUSH_AWARDED_ACHIEVEMENTS", JSON.stringify(awardedList));
-            
             triggerPS5Toast(ach);
         }
     });
@@ -848,7 +790,6 @@ function checkAndAwardAchievements(unlockedCount) {
 
 function triggerPS5Toast(ach) {
     sounds.playTrophySound();
-
     document.getElementById("ps5-toast-icon").innerText = ach.icon;
     document.getElementById("ps5-toast-title").innerText = ach.title;
     document.getElementById("ps5-toast-desc").innerText = ach.desc;
@@ -858,7 +799,7 @@ function triggerPS5Toast(ach) {
 
     setTimeout(() => {
         toast.classList.add("hidden");
-    }, 4000);
+    }, 3500);
 }
 
 function renderAchievementsModal() {
@@ -880,7 +821,6 @@ function renderAchievementsModal() {
             <div class="ach-info">
                 <span class="ach-title">${ach.title}</span>
                 <span class="ach-desc">${ach.desc}</span>
-                <span class="ach-progress">${isAwarded ? "✅ DIBUKA" : `Kemajuan: ${Math.min(unlockedWords, ach.reqWords)}/${ach.reqWords} Perkataan`}</span>
             </div>
         `;
 
@@ -932,17 +872,6 @@ function startChallengeTimer() {
 
         const timeElem = document.getElementById("hud-tracker-value");
         timeElem.innerText = `${state.timeRemaining}s`;
-
-        if (state.timeRemaining <= 10) {
-            timeElem.classList.add("time-warning");
-            if (!state.hasPlayedWarning) {
-                sounds.playWarning();
-                state.hasPlayedWarning = true;
-            }
-        } else {
-            timeElem.classList.remove("time-warning");
-            state.hasPlayedWarning = false;
-        }
 
         if (state.timeRemaining <= 0) {
             clearInterval(state.timerInterval);
@@ -1060,13 +989,13 @@ function submitScoreToGAS() {
     .then(res => res.json())
     .then(data => {
         if (data.status === "success") {
-            if (msgBox) msgBox.innerText = "✅ Rekod Mod Challenge disimpan di Papan Pendahulu Dalam Talian!";
+            if (msgBox) msgBox.innerText = "✅ Rekod disimpan di Papan Pendahulu!";
         } else {
             if (msgBox) msgBox.innerText = "⚠️ Ralat menyimpan rekod dalam talian.";
         }
     })
     .catch(() => {
-        if (msgBox) msgBox.innerText = "ℹ️ Backend tidak dihubungi. Rekod disimpan secara tempatan.";
+        if (msgBox) msgBox.innerText = "ℹ️ Rekod disimpan secara tempatan.";
         saveLocalLeaderboard();
     });
 }
