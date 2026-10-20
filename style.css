@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JAWI RUSH — COMPACT MOBILE-FIRST LANDSCAPE STYLESHEET
+   JAWI RUSH — COMPACT MOBILE-FIRST STYLESHEET WITH AUTO-LANDSCAPE ROTATION
    ========================================================================== */
 
 :root {
@@ -39,7 +39,7 @@ body {
     padding: 0;
 }
 
-/* CONTAINER UTAMA PERMAINAN (FIT 100% SKRIN TELEFON) */
+/* CONTAINER UTAMA PERMAINAN */
 .game-container {
     width: 100vw;
     height: 100dvh;
@@ -48,6 +48,22 @@ body {
     flex-direction: column;
     position: relative;
     overflow: hidden;
+}
+
+/* AUTO-LANDSCAPE: PAKSA PAPARAN MENJADI LANDSCAPE WALAUPUN TELEFON DIDEGAKKAN */
+@media screen and (orientation: portrait) {
+    body {
+        overflow: hidden;
+    }
+    .game-container {
+        width: 100dvh !important;
+        height: 100vw !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) rotate(90deg) !important;
+        transform-origin: center center !important;
+    }
 }
 
 .top-bar {
@@ -227,7 +243,7 @@ body {
     border: 1px solid #fde047;
 }
 
-/* ================= OVERLAY COUNTDOWN 3-2-1 ================= */
+/* OVERLAY COUNTDOWN 3-2-1 */
 .countdown-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -252,7 +268,7 @@ body {
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* ================= ARENA PERMAINAN COMPACT ================= */
+/* ARENA PERMAINAN COMPACT */
 .screen-arena-centered {
     padding: 4px 10px !important;
     display: flex;
