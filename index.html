@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JAWI RUSH 3D — Fullscreen HD Edition</title>
+    <title>JAWI RUSH 3D — Mobile Fullscreen Edition</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,15 +20,6 @@
             <span class="ps5-toast-tag">🏆 PENCAPAIAN DIBUKA!</span>
             <strong id="ps5-toast-title">Pingat Kayu</strong>
             <span id="ps5-toast-desc">Membuka 10 perkataan Jawi!</span>
-        </div>
-    </div>
-
-    <!-- Peringatan Pusing Skrin (Hanya Muncul Jika Peranti Dalam Potret) -->
-    <div id="landscape-notice" class="landscape-notice">
-        <div class="notice-content">
-            <span class="rotate-icon">📱↻</span>
-            <h2>Sila Pusingkan Peranti Anda</h2>
-            <p>Permainan ini direka khas untuk dimainkan dalam <strong>Mod Melintang (Landscape)</strong>.</p>
         </div>
     </div>
 
@@ -52,7 +43,6 @@
             <div class="menu-header-centered">
                 <div class="mascot-wrapper">
                     <div class="mascot-avatar">🎓</div>
-                    <div class="mascot-shadow"></div>
                 </div>
                 <h1 class="game-title">JAWI RUSH</h1>
                 <p class="game-slogan">Lihat Gambar, Susun Huruf, Kuasai Jawi!</p>
@@ -125,6 +115,11 @@
 
         <!-- SKRIN 2: ARENA PERMAINAN BERPUSAT FULLSCREEN -->
         <section id="screen-game-arena" class="screen screen-arena-centered">
+            <!-- OVERLAY COUNTDOWN 3-2-1 UNTUK MENGELAKKAN LAG -->
+            <div id="countdown-overlay" class="countdown-overlay hidden">
+                <div id="countdown-number" class="countdown-number">3</div>
+            </div>
+
             <div class="game-hud">
                 <div class="hud-box">
                     <span class="hud-label">MOD</span>
