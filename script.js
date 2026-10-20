@@ -1,5 +1,5 @@
 /* ==========================================================================
-   JAWI RUSH — FRONTEND LOGIC WITH AUTO-LOCK LANDSCAPE
+   JAWI RUSH — FRONTEND LOGIC WITH COUNTDOWN & CLOUD SYNC
    ========================================================================== */
 
 const CONFIG = {
@@ -235,7 +235,7 @@ class SoundEngine {
         gain.gain.linearRampToValueAtTime(0, now + 0.25);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(now);
+        osc.start();
         osc.stop(now + 0.25);
     }
 
@@ -296,14 +296,6 @@ class SoundEngine {
 
 const sounds = new SoundEngine();
 
-function lockOrientationToLandscape() {
-    try {
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock("landscape").catch(() => {});
-        }
-    } catch(e) {}
-}
-
 function generateSVGForWord(wordObj) {
     const categoryColors = {
         "Benda": "#3b82f6", "Haiwan": "#10b981", "Makanan": "#f59e0b",
@@ -335,7 +327,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startAudioOnFirstInteraction = () => {
         sounds.startBGM("MENU");
-        lockOrientationToLandscape();
         document.removeEventListener("pointerdown", startAudioOnFirstInteraction);
         document.removeEventListener("keydown", startAudioOnFirstInteraction);
     };
@@ -407,7 +398,6 @@ function setupUIEvents() {
 }
 
 function startGame(selectedMode) {
-    lockOrientationToLandscape();
     const nameInput = document.getElementById("input-student-name").value.trim();
     const yearInput = document.getElementById("select-student-year").value;
     const classInput = document.getElementById("select-student-class").value;
